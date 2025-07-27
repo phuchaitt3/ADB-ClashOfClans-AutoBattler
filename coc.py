@@ -12,7 +12,7 @@ def run_adb_command(command):
     """Executes a given ADB command on the specified device."""
     # We split the command into a list of arguments for subprocess.run
     full_command = ["adb", "-s", ADB_DEVICE, "shell"] + command.split()
-    print(f"Executing: {' '.join(full_command)}")
+    # print(f"Executing: {' '.join(full_command)}")
     try:
         # Execute the command
         subprocess.run(full_command, check=True)
@@ -23,8 +23,8 @@ def run_adb_command(command):
 
 # --- Main Automation Sequence ---
 if __name__ == "__main__":
-    for _ in range(5):
-        print("-----START-----")
+    for loop in range(7):
+        # print("-----START-----")
         
         standard_delay = 0.1
 
@@ -98,7 +98,7 @@ if __name__ == "__main__":
         time.sleep(0.5)
         # Return home 
         run_adb_command("input tap 970 915")
-        time.sleep(2.7)
+        time.sleep(3.5)
 
         # Second end
         run_adb_command("input tap 155 760") # safe
@@ -112,4 +112,4 @@ if __name__ == "__main__":
         run_adb_command("input tap 105 635") 
         time.sleep(0.1)
 
-        print("-----END-----")
+        print(f"-----END {loop}-----")
