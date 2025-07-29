@@ -70,14 +70,18 @@ def run_normal_fight():
     # time.sleep(1)
 
     no_troops = 6
+    each_screen_move = (10, 5)
+    first_point = (1530, 820) + each_screen_move*2
+    second_point = (1620, 740) + each_screen_move*2
     third_point = (1790, 675)
+    forth_point = (1870, 615)
     tap_positions = [
-        (1530, 820),  # 1
+        first_point,  # 1
         third_point,  # 2
-        (1530, 820),  # 3
-        (1620, 740),  # 4
+        first_point,  # 3
+        second_point,  # 4
         third_point,  # 5
-        (1870, 615),  # 6
+        forth_point,  # 6
     ]
 
     time_wait_bombs = 3
@@ -163,7 +167,7 @@ if __name__ == "__main__":
     # connect_adb_device(ADB_DEVICE)
 
     for loop in range(8):
-        if loop % 3 == 0:
+        if loop % 2 == 0:
             decup()
         else:
             run_normal_fight()
