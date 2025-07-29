@@ -27,8 +27,30 @@ button_delay = 0.2
 find_now_wait = 6
 return_home_wait = 2.5
 
+def end_battle():
+    # End battle
+    run_adb_command("input tap 155 760")
+    time.sleep(button_delay)
+    # Confirm end
+    run_adb_command("input tap 1170 700")
+    time.sleep(button_delay)
+    # Return home 
+    run_adb_command("input tap 970 915")
+    time.sleep(3.7)
+
+    # Second end
+    run_adb_command("input tap 155 760") # safe
+    time.sleep(button_delay)
+    # Confirm end
+    run_adb_command("input tap 1170 700") # mine
+    time.sleep(button_delay)
+    # Return home 
+    run_adb_command("input tap 970 915") 
+    time.sleep(return_home_wait)
+    run_adb_command("input tap 105 635") 
+    time.sleep(0.1)
+
 def run_normal_fight():
-    # print("-----START-----")
     # Attack
     run_adb_command("input tap 125 950")
     time.sleep(button_delay)
@@ -48,13 +70,14 @@ def run_normal_fight():
     # time.sleep(1)
 
     no_troops = 6
+    third_point = (1790, 675)
     tap_positions = [
         (1530, 820),  # 1
-        (1780, 670),  # 2
+        third_point,  # 2
         (1530, 820),  # 3
         (1620, 740),  # 4
-        (1780, 670),  # 5
-        (1860, 610),  # 6
+        third_point,  # 5
+        (1870, 615),  # 6
     ]
 
     time_wait_bombs = 3
@@ -89,31 +112,9 @@ def run_normal_fight():
     run_adb_command("input tap 200 970")
 
     # Wait for the battle to finish
-    time.sleep(29-hero_skill_wait)
+    time.sleep(30-hero_skill_wait)
 
-    # End battle
-    run_adb_command("input tap 155 760")
-    time.sleep(button_delay)
-    # Confirm end
-    run_adb_command("input tap 1170 700")
-    time.sleep(button_delay)
-    # Return home 
-    run_adb_command("input tap 970 915")
-    time.sleep(3.7)
-
-    # Second end
-    run_adb_command("input tap 155 760") # safe
-    time.sleep(button_delay)
-    # Confirm end
-    run_adb_command("input tap 1170 700") # mine
-    time.sleep(button_delay)
-    # Return home 
-    run_adb_command("input tap 970 915") 
-    time.sleep(return_home_wait)
-    run_adb_command("input tap 105 635") 
-    time.sleep(0.1)
-
-    print(f"-----END {loop}-----")
+    end_battle()
 
 def decup():
     # Attack
@@ -140,10 +141,29 @@ def decup():
     run_adb_command("input tap 970 915")
     time.sleep(return_home_wait)
 
+def connect_adb_device(device_address):
+    """Connects to an ADB device or emulator."""
+    try:
+        # adb connect is not a shell command, so we run it directly
+        result = subprocess.run(["adb", "connect", device_address], check=True, capture_output=True, text=True)
+        print(result.stdout.strip())
+        print(result.stderr.strip())
+        # Give it a moment to establish connection
+        time.sleep(2)
+        print("ADB connection attempt complete.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error connecting to device: {e}")
+        print(f"stdout: {e.stdout}")
+        print(f"stderr: {e.stderr}")
+    except FileNotFoundError:
+        print("Error: 'adb' command not found. Is it in your system's PATH?")
+
 # --- Main Automation Sequence ---
 if __name__ == "__main__":
+    # connect_adb_device(ADB_DEVICE)
+
     for loop in range(8):
-        if loop % 2 == 0:
-            run_normal_fight()
-        else:
+        if loop % 3 == 0:
             decup()
+        else:
+            run_normal_fight()
