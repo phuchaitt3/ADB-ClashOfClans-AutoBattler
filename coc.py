@@ -1,11 +1,12 @@
 import subprocess
 import time
 
+init_adb = False
+
 # --- Configuration ---
 # The identifier for your BlueStacks instance from 'adb devices'
 # This is crucial to avoid the "more than one device" error.
 ADB_DEVICE = "localhost:5555" 
-# adb connect localhost:5555
 
 # --- Helper Function ---
 # It's good practice to create a function to run your commands.
@@ -36,7 +37,7 @@ def end_battle():
     time.sleep(button_delay)
     # Return home 
     run_adb_command("input tap 970 915")
-    time.sleep(3.7)
+    time.sleep(3.8)
 
     # Second end
     run_adb_command("input tap 155 760") # safe
@@ -70,11 +71,11 @@ def run_normal_fight():
     # time.sleep(1)
 
     no_troops = 6
-    each_screen_move = (10, 5)
-    first_point = (1530, 820) + each_screen_move*2
-    second_point = (1620, 740) + each_screen_move*2
-    third_point = (1790, 675)
-    forth_point = (1870, 615)
+    each_screen_move = (20, 10)
+    first_point = (1530, 820) + each_screen_move
+    second_point = (1620, 740) + each_screen_move
+    third_point = (1790, 680) + each_screen_move*2
+    forth_point = (1870, 615) + each_screen_move*2
     tap_positions = [
         first_point,  # 1
         third_point,  # 2
@@ -164,7 +165,8 @@ def connect_adb_device(device_address):
 
 # --- Main Automation Sequence ---
 if __name__ == "__main__":
-    # connect_adb_device(ADB_DEVICE)
+    if init_adb:
+        connect_adb_device(ADB_DEVICE)
 
     for loop in range(8):
         if loop % 2 == 0:
