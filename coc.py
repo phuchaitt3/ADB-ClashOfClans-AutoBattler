@@ -2,6 +2,14 @@ import subprocess
 import time
 
 init_adb = False
+decup_flag = False
+
+standard_delay = 0.1
+button_delay = 0.2
+find_now_wait = 5.7
+return_home_wait = 2.5
+time_wait_bombs = 3
+hero_skill_wait = 11.8 - time_wait_bombs
 
 # --- Configuration ---
 # The identifier for your BlueStacks instance from 'adb devices'
@@ -22,11 +30,6 @@ def run_adb_command(command):
         print(f"Error executing command: {e}")
     except FileNotFoundError:
         print("Error: 'adb' command not found. Is it in your system's PATH?")
-
-standard_delay = 0.1
-button_delay = 0.2
-find_now_wait = 6
-return_home_wait = 2.5
 
 def end_battle():
     # End battle
@@ -72,20 +75,18 @@ def run_normal_fight():
 
     no_troops = 6
     each_screen_move = (20, 10)
-    first_point = (1530, 820) + each_screen_move
+    first_point = (1530, 820) + each_screen_move*2
     second_point = (1620, 740) + each_screen_move
     third_point = (1790, 680) + each_screen_move*2
     forth_point = (1870, 615) + each_screen_move*2
     tap_positions = [
-        first_point,  # 1
-        third_point,  # 2
-        first_point,  # 3
-        second_point,  # 4
-        third_point,  # 5
+        third_point,  # 1
+        first_point,  # 2
+        forth_point,  # 3
+        third_point,  # 4
+        second_point,  # 5
         forth_point,  # 6
     ]
-
-    time_wait_bombs = 3
 
     for i in range(no_troops):
         if i == 2:
@@ -112,7 +113,6 @@ def run_normal_fight():
         time.sleep(2.5)
 
     # Activate hero skill
-    hero_skill_wait = 11.8 - time_wait_bombs
     time.sleep(hero_skill_wait)
     run_adb_command("input tap 200 970")
 
@@ -169,7 +169,7 @@ if __name__ == "__main__":
         connect_adb_device(ADB_DEVICE)
 
     for loop in range(8):
-        if loop % 2 == 0:
+        if (loop % 2 == 0) or decup_flag:
             decup()
         else:
             run_normal_fight()
