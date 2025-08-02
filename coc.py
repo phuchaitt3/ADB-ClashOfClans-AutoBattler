@@ -2,14 +2,15 @@ import subprocess
 import time
 
 init_adb = False
+# init_adb = True
 decup_flag = False
 
-standard_delay = 0.1
+standard_delay = 0.09
 button_delay = 0.2
-find_now_wait = 5.7
+find_now_wait = 5.8
 return_home_wait = 2.5
-time_wait_bombs = 3
-hero_skill_wait = 11.8 - time_wait_bombs
+time_wait_skills = 3
+hero_skill_wait = 11.8 - time_wait_skills
 
 # --- Configuration ---
 # The identifier for your BlueStacks instance from 'adb devices'
@@ -75,17 +76,17 @@ def run_normal_fight():
 
     no_troops = 6
     each_screen_move = (20, 10)
-    first_point = (1530, 820) + each_screen_move*2
+    first_point = (1520, 825) + each_screen_move*2
     second_point = (1620, 740) + each_screen_move
     third_point = (1790, 680) + each_screen_move*2
-    forth_point = (1870, 615) + each_screen_move*2
+    forth_point = (1880, 610) + each_screen_move*2
     tap_positions = [
         third_point,  # 1
         first_point,  # 2
         forth_point,  # 3
         third_point,  # 4
         second_point,  # 5
-        forth_point,  # 6
+        first_point,  # 6
     ]
 
     for i in range(no_troops):
@@ -96,7 +97,6 @@ def run_normal_fight():
             run_adb_command("input tap 1620 740")
             time.sleep(standard_delay) 
             # Wait to search bombs
-            time.sleep(time_wait_bombs)
         
         run_adb_command(f"input tap {365 + i * 155} 975")
         time.sleep(standard_delay)
@@ -106,8 +106,7 @@ def run_normal_fight():
         time.sleep(standard_delay)
     
     # Activate skills
-    # 365 975 1, 520 975 2, 670 975 3, 825 975 4, 980 975 5, 1125 975 6
-    # 155, 150, 155, 155, 155
+    time.sleep(time_wait_skills)
     for i in range(2, no_troops + 1):
         run_adb_command(f"input tap {365 + i * 155} 975")
         time.sleep(2.5)
