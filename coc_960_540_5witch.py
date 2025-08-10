@@ -4,7 +4,8 @@ import time
 init_adb = False
 # init_adb = True
 decup_flag = False # quick decup mode
-test_mode = False
+fight_mode = True
+fight_mode_loops = 1
 
 # Original resolution: 1920x1080
 # New resolution: 960x540
@@ -19,8 +20,8 @@ no_skill_troops = no_troops - no_noskill
 find_now_wait = 6.1
 return_home_wait = 2.4
 time_wait_skills = 3.0
-witch_wait = 2.5
-hero_skill_wait = 27.9 - time_wait_skills - witch_wait*no_skill_troops - find_now_wait
+witch_wait = 2.6
+hero_skill_wait = 28.5 - time_wait_skills - witch_wait*no_skill_troops - find_now_wait
 time_wait_battle = 26 - hero_skill_wait
 
 # first_x = 800
@@ -123,7 +124,7 @@ def run_normal_fight():
     # Activate skills
     time.sleep(time_wait_skills)
     # for i in range(no_noskill, no_troops + 1):
-    for i in [1, 5, 2, 4, 3]:
+    for i in [5, 1, 4, 2, 3]:
         run_adb_command(f"input tap {int(182.5 + i * 77.5)} 487")
         time.sleep(witch_wait)
 
@@ -179,8 +180,9 @@ if __name__ == "__main__":
     if init_adb:
         connect_adb_device(ADB_DEVICE)
 
-    if test_mode:
-        run_normal_fight()
+    if fight_mode:
+        for _ in range(fight_mode_loops):
+            run_normal_fight()
     else:
         for loop in range(no_fights):
             if (loop % 2 == 0) or decup_flag:
