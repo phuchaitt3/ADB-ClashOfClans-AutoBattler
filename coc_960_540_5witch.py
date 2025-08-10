@@ -2,8 +2,9 @@ import subprocess
 import time
 
 init_adb = False
-init_adb = True
+# init_adb = True
 decup_flag = False # quick decup mode
+test_mode = False
 
 # Original resolution: 1920x1080
 # New resolution: 960x540
@@ -13,35 +14,46 @@ standard_delay = 0.09
 button_delay = 0.2
 find_now_wait = 6.2
 return_home_wait = 2.4
+no_troops = 6
+no_noskill = 1
+no_skill_troops = no_troops - no_noskill
 time_wait_skills = 3
-hero_skill_wait = 11.8 - time_wait_skills
+witch_wait = 2.5
+hero_skill_wait = 21.5 - time_wait_skills - witch_wait*no_skill_troops
 time_wait_battle = 27
 
-# Original coordinates for 1920x1080
-# each_screen_move = (20, 10)
-# first_point = (1520, 825) + each_screen_move*4
-# second_point = (1600, 730) + each_screen_move*4
-# third_point = (1790, 680) + each_screen_move*4
-# forth_point = (1880, 610) + each_screen_move*4
+# first_x = 800
+# last_x = 940
+# first_y = 420
+# last_y = 320
 
-# Halved coordinates for 960x540
-# each_screen_move = (7*5, 6*5)
-each_screen_move = (0,0)
-first_x = 760
-first_y = 420
-last_x = 940
-last_y = 300
-x_diff = last_x - first_x # 180
-y_diff = last_y - first_y # 120
-first_point = (first_x + each_screen_move[0], first_y + each_screen_move[1])
-second_point = (first_x + 1/3*x_diff + each_screen_move[0], first_y + 1/3*y_diff + each_screen_move[1])
-third_point = (first_x + 2/3*x_diff + each_screen_move[0], first_y + 2/3*y_diff + each_screen_move[1])
-forth_point = (last_x + each_screen_move[0], last_y + each_screen_move[1])
+# more spread
+first_x = 730
+last_x = 950
+first_y = 430
+last_y = 270
+
+x_diff = last_x - first_x
+y_diff = last_y - first_y
+first_point = (first_x, first_y)
+second_point = (first_x + 1/4*x_diff, first_y + 1/4*y_diff)
+third_point = (first_x + 2/4*x_diff, first_y + 2/4*y_diff)
+forth_point = (first_x + 3/4*x_diff, first_y + 3/4*y_diff)
+fifth_point = (last_x, last_y)
+
+tap_positions = [
+    second_point,  # balloon
+    fifth_point,  # 2
+    forth_point,  # 3
+    third_point,  # 4
+    second_point, # 5
+    first_point,  # 6
+]
 
 def play_hero():
     run_adb_command("input tap 100 485")
     time.sleep(standard_delay)
-    run_adb_command(f"input tap {second_point[0]} {second_point[1]}") # 2nd position
+    run_adb_command(f"input tap {first_point[0]} {first_point[1]}")
     time.sleep(standard_delay)
 
 # --- Configuration ---
@@ -96,30 +108,23 @@ def run_normal_fight():
     run_adb_command("input tap 710 350")
     time.sleep(find_now_wait)
 
-    no_troops = 6
-    tap_positions = [
-        third_point,  # 1
-        first_point,  # 2
-        forth_point,  # 3
-        third_point,  # 4
-        second_point, # 5
-        first_point,  # 6
-    ]
-
     for i in range(no_troops):
-        if i == 2:
+        if i == no_noskill:
             play_hero()
 
         run_adb_command(f"input tap {int(182.5 + i * 77.5)} 487")
         time.sleep(standard_delay)
-        run_adb_command(f"input tap {tap_positions[i][0]} {tap_positions[i][1]}")
+        tap_map = f"input tap {tap_positions[i][0]} {tap_positions[i][1]}"
+        run_adb_command(tap_map)
+        # print(tap_map)
         time.sleep(standard_delay)
 
     # Activate skills
     time.sleep(time_wait_skills)
-    for i in range(2, no_troops + 1):
+    # for i in range(no_noskill, no_troops + 1):
+    for i in [1, 5, 2, 4, 3]:
         run_adb_command(f"input tap {int(182.5 + i * 77.5)} 487")
-        time.sleep(2.5)
+        time.sleep(witch_wait)
 
     # Activate hero skill
     time.sleep(hero_skill_wait)
@@ -173,8 +178,11 @@ if __name__ == "__main__":
     if init_adb:
         connect_adb_device(ADB_DEVICE)
 
-    for loop in range(no_fights):
-        if (loop % 2 == 0) or decup_flag:
-            decup()
-        else:
-            run_normal_fight()
+    if test_mode:
+        run_normal_fight()
+    else:
+        for loop in range(no_fights):
+            if (loop % 2 == 0) or decup_flag:
+                decup()
+            else:
+                run_normal_fight()
