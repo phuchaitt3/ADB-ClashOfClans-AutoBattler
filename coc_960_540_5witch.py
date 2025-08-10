@@ -12,15 +12,16 @@ test_mode = False
 no_fights = 8
 standard_delay = 0.09
 button_delay = 0.2
-find_now_wait = 6.2
-return_home_wait = 2.4
 no_troops = 6
 no_noskill = 1
 no_skill_troops = no_troops - no_noskill
-time_wait_skills = 3
+
+find_now_wait = 6.1
+return_home_wait = 2.4
+time_wait_skills = 3.0
 witch_wait = 2.5
-hero_skill_wait = 21.5 - time_wait_skills - witch_wait*no_skill_troops
-time_wait_battle = 27
+hero_skill_wait = 27.9 - time_wait_skills - witch_wait*no_skill_troops - find_now_wait
+time_wait_battle = 26 - hero_skill_wait
 
 # first_x = 800
 # last_x = 940
@@ -131,7 +132,7 @@ def run_normal_fight():
     run_adb_command("input tap 100 485")
 
     # Wait for the battle to finish
-    time.sleep(time_wait_battle-hero_skill_wait)
+    time.sleep(time_wait_battle)
 
     end_battle()
 
