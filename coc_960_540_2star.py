@@ -4,25 +4,26 @@ import time
 init_adb = False
 # init_adb = True
 decup_flag = False # quick decup mode
-fight_mode = False
-fight_mode_loops = 1
+fight_mode = True
+fight_mode_loops = 8
 
 # Original resolution: 1920x1080
 # New resolution: 960x540
 
 no_fights = 8
-standard_delay = 0.09
+standard_delay = 0
 button_delay = 0.2
 no_troops = 6
 no_noskill = 1
 no_skill_troops = no_troops - no_noskill
 
-find_now_wait = 6.1
+find_now_wait = 6
 return_home_wait = 2.4
-time_wait_skills = 3.0
-witch_wait = 2.6
-hero_skill_wait = 28.4 - time_wait_skills - witch_wait*no_skill_troops - find_now_wait
-time_wait_battle = 26 - hero_skill_wait
+time_wait_skills = 1.3
+witch_wait = 3
+hero_skill_wait = 22.5 - time_wait_skills - witch_wait*no_skill_troops - find_now_wait
+time_wait_battle = 8.5 - hero_skill_wait
+balloon_till_hero = 1.5
 
 # first_x = 800
 # last_x = 940
@@ -100,6 +101,16 @@ def end_battle():
     time.sleep(return_home_wait)
     run_adb_command("input tap 52 317")
     time.sleep(0.1)
+    
+def end_battle_once():
+    run_adb_command("input tap 77 380") # safe
+    time.sleep(button_delay)
+    # Confirm end
+    run_adb_command("input tap 585 350") # mine
+    time.sleep(button_delay)
+    # Return home
+    run_adb_command("input tap 485 457")
+    time.sleep(return_home_wait)
 
 def run_normal_fight():
     # Attack
@@ -129,13 +140,17 @@ def run_normal_fight():
         time.sleep(witch_wait)
 
     # Activate hero skill
-    time.sleep(hero_skill_wait)
+    # if hero_skill_wait - balloon_till_hero >= 0:
+    #     time.sleep(hero_skill_wait - balloon_till_hero)
+    run_adb_command(f"input tap {int(182.5 + 0 * 77.5)} 487")
+    time.sleep(balloon_till_hero)
     run_adb_command("input tap 100 485")
 
     # Wait for the battle to finish
     time.sleep(time_wait_battle)
 
-    end_battle()
+    # end_battle()
+    end_battle_once()
 
 def decup():
     # Attack
