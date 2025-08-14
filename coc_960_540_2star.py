@@ -7,9 +7,6 @@ decup_flag = False # quick decup mode
 fight_mode = False
 fight_mode_loops = 1
 
-# Original resolution: 1920x1080
-# New resolution: 960x540
-
 no_fights = 8
 mod = 2
 standard_delay = 0
@@ -18,16 +15,12 @@ no_troops = 6
 no_noskill = 1
 no_skill_troops = no_troops - no_noskill
 
-find_now_wait = 5.7
+find_now_wait = 5.5
 return_home_wait = 2.3
 time_wait_skills = 1
 witch_wait = 2.4
-# hero_skill_wait = 22.5 - time_wait_skills - witch_wait*no_skill_troops - find_now_wait
-# balloon_wait = witch_wait
-# balloon_till_hero = 1
-time_wait_battle = 5.5
+time_wait_battle = 4.4
 
-# more spread
 first_x = 730
 last_x = 950
 first_y = 430
