@@ -7,8 +7,8 @@ decup_flag = False # quick decup mode
 fight_mode = False
 fight_mode_loops = 1
 
-no_fights = 8
-mod = 2
+no_fights = 9
+mod = 3
 standard_delay = 0
 button_delay = 0.2
 no_troops = 6
@@ -21,10 +21,10 @@ time_wait_skills = 1
 witch_wait = 2.4
 time_wait_battle = 4.4
 
-first_x = 730
+first_x = 780 # 730
 last_x = 950
 first_y = 430
-last_y = 270
+last_y = 320 # 270
 
 x_diff = last_x - first_x
 y_diff = last_y - first_y
@@ -187,7 +187,7 @@ if __name__ == "__main__":
             run_normal_fight()
     else:
         for loop in range(no_fights):
-            if (loop % mod == 0) or decup_flag:
-                decup()
-            else:
+            if (loop % mod == 0) and not decup_flag:
                 run_normal_fight()
+            else:
+                decup()
