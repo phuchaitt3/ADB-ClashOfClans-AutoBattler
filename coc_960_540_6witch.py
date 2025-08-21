@@ -2,24 +2,28 @@ import subprocess
 import time
 
 init_adb = False
-# init_adb = True
+init_adb = True
 decup_flag = False # quick decup mode
 fight_mode = False
 fight_mode_loops = 1
 
-no_fights = 9
-mod = 3
+no_decup = 8
+no_fights = 1
+
+# no_decup = 0
+# no_fights = 1
+
 standard_delay = 0
-button_delay = 0.2
+button_delay = 0.1
 no_troops = 6
-no_noskill = 1
+no_noskill = 0
 no_skill_troops = no_troops - no_noskill
 
-find_now_wait = 5.5
-return_home_wait = 2.3
-time_wait_skills = 1
+find_now_wait = 4.8
+return_home_wait = 2.2
+time_wait_skills = 0
 witch_wait = 2.4
-time_wait_battle = 4.4
+time_wait_battle = 3.3
 
 first_x = 780 # 730
 last_x = 950
@@ -29,13 +33,14 @@ last_y = 320 # 270
 x_diff = last_x - first_x
 y_diff = last_y - first_y
 first_point = (first_x, first_y)
-second_point = (first_x + 1/4*x_diff, first_y + 1/4*y_diff)
-third_point = (first_x + 2/4*x_diff, first_y + 2/4*y_diff)
-forth_point = (first_x + 3/4*x_diff, first_y + 3/4*y_diff)
-fifth_point = (last_x, last_y)
+second_point = (first_x + 1/5*x_diff, first_y + 1/5*y_diff)
+third_point = (first_x + 2/5*x_diff, first_y + 2/5*y_diff)
+forth_point = (first_x + 3/5*x_diff, first_y + 3/5*y_diff)
+fifth_point = (first_x + 4/5*x_diff, first_y + 4/5*y_diff)
+sixth_point = (last_x, last_y)
 
 tap_positions = [
-    second_point,  # balloon
+    sixth_point,  # 1
     fifth_point,  # 2
     forth_point,  # 3
     third_point,  # 4
@@ -125,11 +130,9 @@ def run_normal_fight():
     # Activate skills
     time.sleep(time_wait_skills)
     # for i in range(no_noskill, no_troops + 1):
-    for i in [5, 1, 4, 2, 3]:
+    for i in [5, 0, 4, 1, 3, 2]:
         run_adb_command(f"input tap {int(182.5 + i * 77.5)} 487")
         time.sleep(witch_wait)
-        if i == 4: # balloon
-            run_adb_command(f"input tap {int(182.5 + 0 * 77.5)} 487")
         if i == 3: # hero
             run_adb_command("input tap 100 485")
 
@@ -182,12 +185,7 @@ if __name__ == "__main__":
     if init_adb:
         connect_adb_device(ADB_DEVICE)
 
-    if fight_mode:
-        for _ in range(fight_mode_loops):
-            run_normal_fight()
-    else:
-        for loop in range(no_fights):
-            if (loop % mod == 0) and not decup_flag:
-                run_normal_fight()
-            else:
-                decup()
+    for loop in range(no_decup):
+        decup()
+    for loop in range(no_fights):
+        run_normal_fight() 
