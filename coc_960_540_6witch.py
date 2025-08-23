@@ -1,11 +1,14 @@
 import subprocess
 import time
+import sys
 
 init_adb = False
-init_adb = True
+# init_adb = True
 decup_flag = False # quick decup mode
 fight_mode = False
 fight_mode_loops = 1
+no_auto_end = False
+
 
 no_decup = 8
 no_fights = 1
@@ -19,7 +22,7 @@ no_troops = 6
 no_noskill = 0
 no_skill_troops = no_troops - no_noskill
 
-find_now_wait = 4.8
+find_now_wait = 4.7
 return_home_wait = 2.2
 time_wait_skills = 0
 witch_wait = 2.4
@@ -74,34 +77,37 @@ def run_adb_command(command):
     except FileNotFoundError:
         print("Error: 'adb' command not found. Is it in your system's PATH?")
 
-def end_battle():
-    # End battle
+# def end_battle():
+#     # End battle
+#     run_adb_command("input tap 77 380")
+#     time.sleep(button_delay)
+#     # Confirm end
+#     run_adb_command("input tap 585 350")
+#     time.sleep(button_delay)
+#     # Return home
+#     run_adb_command("input tap 485 457")
+#     time.sleep(3.8)
+
+#     # Second end
+#     run_adb_command("input tap 77 380") # safe
+#     time.sleep(button_delay)
+#     # Confirm end
+#     run_adb_command("input tap 585 350") # mine
+#     time.sleep(button_delay)
+#     # Return home
+#     run_adb_command("input tap 485 457")
+#     time.sleep(return_home_wait)
+#     run_adb_command("input tap 52 317")
+#     time.sleep(0.1)
+    
+def end_battle_once():
+    if no_auto_end:
+        return
+
     run_adb_command("input tap 77 380")
     time.sleep(button_delay)
     # Confirm end
     run_adb_command("input tap 585 350")
-    time.sleep(button_delay)
-    # Return home
-    run_adb_command("input tap 485 457")
-    time.sleep(3.8)
-
-    # Second end
-    run_adb_command("input tap 77 380") # safe
-    time.sleep(button_delay)
-    # Confirm end
-    run_adb_command("input tap 585 350") # mine
-    time.sleep(button_delay)
-    # Return home
-    run_adb_command("input tap 485 457")
-    time.sleep(return_home_wait)
-    run_adb_command("input tap 52 317")
-    time.sleep(0.1)
-    
-def end_battle_once():
-    run_adb_command("input tap 77 380") # safe
-    time.sleep(button_delay)
-    # Confirm end
-    run_adb_command("input tap 585 350") # mine
     time.sleep(button_delay)
     # Return home
     run_adb_command("input tap 485 457")
@@ -185,6 +191,10 @@ if __name__ == "__main__":
     if init_adb:
         connect_adb_device(ADB_DEVICE)
 
+    if fight_mode:
+        for loop in range(fight_mode_loops):
+            run_normal_fight()
+        sys.exit()
     for loop in range(no_decup):
         decup()
     for loop in range(no_fights):
