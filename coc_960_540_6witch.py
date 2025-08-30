@@ -5,15 +5,16 @@ import sys
 init_adb = False
 # init_adb = True
 decup_flag = False # quick decup mode
-fight_mode = False
-fight_mode_loops = 3
+fight_mode = True
+fight_mode_loops = 5
 no_auto_end = False
 no_hero = True
+full_fight = True
 
-no_decup = 0
+no_decup = 1
 no_fights = 1
 
-standard_delay = 0
+standard_delay = 0.01
 button_delay = 0.1
 no_troops = 6
 no_noskill = 0
@@ -21,12 +22,21 @@ no_skill_troops = no_troops - no_noskill
 
 find_now_wait = 4.7
 return_home_wait = 2.2
-time_wait_skills = 0
-witch_wait = 2.3
-if not no_hero:
-    time_wait_battle = 3.2
+if not full_fight:
+    time_wait_skills = 0
 else:
-    time_wait_battle = 3.7
+    time_wait_skills = 2
+if not full_fight:
+    witch_wait = 2.3
+else:
+    witch_wait = 3.6
+if not full_fight:
+    if not no_hero:
+        time_wait_battle = 3.2
+    else:
+        time_wait_battle = 3.7
+else:
+    time_wait_battle = 12
 
 first_x = 780 # 730
 last_x = 950
@@ -82,28 +92,31 @@ def run_adb_command(command):
     except FileNotFoundError:
         print("Error: 'adb' command not found. Is it in your system's PATH?")
 
-# def end_battle():
-#     # End battle
-#     run_adb_command("input tap 77 380")
-#     time.sleep(button_delay)
-#     # Confirm end
-#     run_adb_command("input tap 585 350")
-#     time.sleep(button_delay)
-#     # Return home
-#     run_adb_command("input tap 485 457")
-#     time.sleep(3.8)
+def end_battle():
+    if no_auto_end:
+        return
+    
+    # End battle
+    run_adb_command("input tap 77 380")
+    time.sleep(button_delay)
+    # Confirm end
+    run_adb_command("input tap 585 350")
+    time.sleep(button_delay)
+    # Return home
+    run_adb_command("input tap 485 457")
+    time.sleep(3.8)
 
-#     # Second end
-#     run_adb_command("input tap 77 380") # safe
-#     time.sleep(button_delay)
-#     # Confirm end
-#     run_adb_command("input tap 585 350") # mine
-#     time.sleep(button_delay)
-#     # Return home
-#     run_adb_command("input tap 485 457")
-#     time.sleep(return_home_wait)
-#     run_adb_command("input tap 52 317")
-#     time.sleep(0.1)
+    # Second end
+    run_adb_command("input tap 77 380") # safe
+    time.sleep(button_delay)
+    # Confirm end
+    run_adb_command("input tap 585 350") # mine
+    time.sleep(button_delay)
+    # Return home
+    run_adb_command("input tap 485 457")
+    time.sleep(return_home_wait)
+    run_adb_command("input tap 52 317")
+    time.sleep(0.1)
     
 def end_battle_once():
     if no_auto_end:
@@ -128,7 +141,7 @@ def run_normal_fight():
     time.sleep(find_now_wait)
 
     for i in range(no_troops):
-        if (i == no_noskill) and not no_hero:
+        if (i == no_noskill) and (not no_hero):
             play_hero()
 
         run_adb_command(f"input tap {int(first_troop_x + i * 77.5)} 487")
@@ -144,14 +157,16 @@ def run_normal_fight():
     for i in [5, 0, 4, 1, 3, 2]:
         run_adb_command(f"input tap {int(first_troop_x + i * 77.5)} 487")
         time.sleep(witch_wait)
-        if (i == 3) and not no_hero: # hero
+        if (i == 3) and (not no_hero): # hero
             run_adb_command("input tap 100 485")
 
     # Wait for the battle to finish
     time.sleep(time_wait_battle)
 
-    # end_battle()
-    end_battle_once()
+    if full_fight:
+        end_battle()
+    else:
+        end_battle_once()
 
 def decup():
     # Attack
