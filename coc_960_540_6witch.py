@@ -6,15 +6,12 @@ init_adb = False
 # init_adb = True
 decup_flag = False # quick decup mode
 fight_mode = False
-fight_mode_loops = 1
+fight_mode_loops = 3
 no_auto_end = False
+no_hero = True
 
-
-no_decup = 8
+no_decup = 0
 no_fights = 1
-
-# no_decup = 0
-# no_fights = 1
 
 standard_delay = 0
 button_delay = 0.1
@@ -25,8 +22,11 @@ no_skill_troops = no_troops - no_noskill
 find_now_wait = 4.7
 return_home_wait = 2.2
 time_wait_skills = 0
-witch_wait = 2.4
-time_wait_battle = 3.3
+witch_wait = 2.3
+if not no_hero:
+    time_wait_battle = 3.2
+else:
+    time_wait_battle = 3.7
 
 first_x = 780 # 730
 last_x = 950
@@ -50,6 +50,11 @@ tap_positions = [
     second_point, # 5
     first_point,  # 6
 ]
+
+if no_hero:
+    first_troop_x = 182.5 - 77.5
+else:
+    first_troop_x = 182.5
 
 def play_hero():
     run_adb_command("input tap 100 485")
@@ -123,10 +128,10 @@ def run_normal_fight():
     time.sleep(find_now_wait)
 
     for i in range(no_troops):
-        if i == no_noskill:
+        if (i == no_noskill) and not no_hero:
             play_hero()
 
-        run_adb_command(f"input tap {int(182.5 + i * 77.5)} 487")
+        run_adb_command(f"input tap {int(first_troop_x + i * 77.5)} 487")
         time.sleep(standard_delay)
         tap_map = f"input tap {tap_positions[i][0]} {tap_positions[i][1]}"
         run_adb_command(tap_map)
@@ -137,9 +142,9 @@ def run_normal_fight():
     time.sleep(time_wait_skills)
     # for i in range(no_noskill, no_troops + 1):
     for i in [5, 0, 4, 1, 3, 2]:
-        run_adb_command(f"input tap {int(182.5 + i * 77.5)} 487")
+        run_adb_command(f"input tap {int(first_troop_x + i * 77.5)} 487")
         time.sleep(witch_wait)
-        if i == 3: # hero
+        if (i == 3) and not no_hero: # hero
             run_adb_command("input tap 100 485")
 
     # Wait for the battle to finish
