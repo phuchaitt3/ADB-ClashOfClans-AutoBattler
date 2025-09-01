@@ -1,0 +1,4 @@
+- Main file: coc_960_540_6witch.py
+- Used with Blue Stacks on Desktop
+- Works with lowest resolution 960x540 (for lower load when running in background)
+- FPS should be 60. Somehow lowering FPS makes the game lagger
