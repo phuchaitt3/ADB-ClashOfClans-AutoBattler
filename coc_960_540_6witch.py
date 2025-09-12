@@ -4,17 +4,18 @@ import sys
 
 init_adb = False
 # init_adb = True
+
 decup_flag = False # quick decup mode
-fight_mode = True
+fight_mode = False
 fight_mode_loops = 5
 no_auto_end = False
 no_hero = True
-full_fight = True
+full_fight = False
 
-no_decup = 1
-no_fights = 1
+no_decup = 6
+no_fights = 2
 
-standard_delay = 0.01
+standard_delay = 0.001
 button_delay = 0.1
 no_troops = 6
 no_noskill = 0
@@ -27,7 +28,7 @@ if not full_fight:
 else:
     time_wait_skills = 2
 if not full_fight:
-    witch_wait = 2.3
+    witch_wait = 2.2
 else:
     witch_wait = 3.6
 if not full_fight:
