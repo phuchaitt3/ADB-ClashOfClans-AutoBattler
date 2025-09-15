@@ -12,8 +12,9 @@ no_auto_end = False
 no_hero = True
 full_fight = False
 
-no_decup = 6
-no_fights = 2
+# X 7 1 or 6 1
+no_decup = 0
+no_fights = 6
 
 standard_delay = 0.001
 button_delay = 0.1
@@ -30,7 +31,7 @@ else:
 if not full_fight:
     witch_wait = 2.2
 else:
-    witch_wait = 3.6
+    witch_wait = 3.5
 if not full_fight:
     if not no_hero:
         time_wait_battle = 3.2
